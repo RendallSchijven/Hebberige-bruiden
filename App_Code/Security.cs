@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
+using System.Web.UI.WebControls;
 using WebMatrix.Data;
 
 
@@ -22,15 +23,26 @@ public static class Security
     /// <summary>
     /// Creates an account
     /// </summary>
-    public static string CreateAccount(string password)
+    public static string CreateAccount(string email, string password)
     {
-        return HashPassword(password);
+        string hash_pass = HashPassword(password);
+        var db = Database.Open("hebberige-bruiden");
+
+        string GetQuery = "SELECT email FROM bruidspaar WHERE email=@0";
+
+        //test for existing email
+        if (db.QuerySingle(GetQuery, email) != null) return "Email already set";
+        
+        string InsertQuery = "INSERT INTO bruidspaar (email,password) VALUES(@0, @1); ";
+        db.Execute(InsertQuery, email, hash_pass);
+        return "succes";
+
     }
 
     /// <summary>
     /// Login to blyat
     /// </summary>
-    public static int Login(string email, string password)
+    public static string Login(string email, string password)
     {
         throw new NotImplementedException();
     }
@@ -38,7 +50,7 @@ public static class Security
     /// <summary>
     /// Resets password and sends email with reset key
     /// </summary>
-    public static bool ResetPassword()
+    public static string ResetPassword()
     {
         //we need a webserver for this.
         throw new NotImplementedException();
@@ -47,7 +59,7 @@ public static class Security
     /// <summary>
     /// Check for sessions
     /// </summary>
-    public static bool IsAuthenticated(int session_id)
+    public static bool IsAuthenticated(int sessionId)
     {
         throw new NotImplementedException();
     }

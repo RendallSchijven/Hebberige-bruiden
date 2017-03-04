@@ -5,6 +5,8 @@
     wishlist.Add(2);
     wishlist.Add(3);
 
+    Response.Write(Security.CreateAccount("kappa@kappa.nl", "keepo"));
+
 }
 
 <!DOCTYPE html>
@@ -91,7 +93,7 @@
                 <div class="col-md-12 portfolio-item">
                     <a href="#">
                         <!-- Change size in url -->
-                        <img class="img-responsive center-block" src="http://placehold.it/750x450" alt="">
+                        <img class="img-responsive center-block" src="http://placehold.it/750x450" alt="kappa">
                     </a>
                 </div>
             </div>
@@ -99,6 +101,32 @@
         }
 
         <hr>
+
+        <!-- Login form here(copy pasta from bootstrap) -->
+        <form class="form-horizontal" method="post">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Wachtwoord</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Wachtwoord">
+            </div>
+
+           <!-- Remember me(optional)
+            <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Remember me
+                        </label>
+                    </div>
+                </div>
+            <div class="form-group">
+                <button type="submit" name="login" class="btn btn-primary" value="login">Login</button>
+            </div> -->
+
+        </form>
 
         <!-- Footer -->
         <footer>
