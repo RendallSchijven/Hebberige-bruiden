@@ -36,7 +36,8 @@ public static class Security
 
         string InsertQuery = "INSERT INTO users (email, password, public_link) VALUES(@0, @1, @2); ";
         db.Execute(InsertQuery, email, hashPass, publicLink);
-        return "succes";
+        HttpContext.Current.Response.Redirect("Login");
+        return "";
     }
 
     /// <summary>

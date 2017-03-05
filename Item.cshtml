@@ -8,6 +8,7 @@
     var items = new List<Item>();
 
     //Example add(after database get otherwise redundant lists)
+    
     //items.Add(new Item(4,"bier","heel veel bier", buy_url: "www.kappa.nl", save: true));
     if (Request.QueryString["wishlist_id"].IsEmpty() && Request.QueryString["item_id"].IsEmpty())
     {
