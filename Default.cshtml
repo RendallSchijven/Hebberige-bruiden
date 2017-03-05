@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Xml.Linq
+@{
     //authentication ALWAYS FIRST
     if (!Security.IsAuthenticated())
     {
@@ -6,7 +7,20 @@
     }
 
     var wishlists = new List<Wishlist>();
-    
+
+    //wishlists.Add(new Wishlist(1, "kekke lijst", "allemaal kekke items hier", save: true));
+    string user_link = Session["user_link"].ToString();
+    var db = Database.Open("test");
+
+    //just skip the insane query
+    string GetQuery = "SELECT * FROM wishlists WHERE wishlist_link IN" +
+                      "(SELECT wishlist_link FROM has WHERE user_link=@0)";
+
+    foreach (var row in db.Query(GetQuery, user_link))
+    {
+        wishlists.Add(new Wishlist(row.user_id, row.name, row.description, row.wishlist_link, row.wishlist_id));
+    }
+
     Layout = "_Layout.cshtml";
 }
 
