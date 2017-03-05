@@ -1,0 +1,74 @@
+﻿@{
+    if (Security.IsAuthenticated())
+    {
+        Response.Redirect("Default");
+    }
+
+
+
+    string error = "";
+
+    if (IsPost && !Request.Form["register"].IsEmpty())
+    {
+        //Validation
+        Validation.RequireField("email", "Email is required");
+        Validation.RequireField("password", "Password is required");
+        if (Validation.IsValid())
+        {
+            var email = Request.Form["email"];
+            var password = Request.Form["password"];
+
+            error = Security.CreateAccount(email, password);
+        }
+
+    }
+
+    Layout = "_Layout.cshtml";
+}
+
+<!-- Page Heading -->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            Create Account
+            <small>IdunnoWhatToPlaceHere</small>
+        </h1>
+    </div>
+</div>
+<!-- /.row -->
+<!-- Login form here(copy pasta from bootstrap) -->
+<form class="form-horizontal" method="post">
+    <!-- error display -->
+    @if (error != "")
+    {
+        <div class="alert alert-danger form-group">
+            <strong>Error:</strong> @error
+        </div>
+    }
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" name="email" value="@Request.Form["email"] " placeholder="Email">
+        <span style="color: red;">*@Html.ValidationMessage("email")</span>
+    </div>
+
+    <div class="form-group">
+        <label for="password">Wachtwoord</label>
+
+        <input type="password" class="form-control" id="password" name="password" placeholder="Wachtwoord">
+        <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+        <span style="color: red;">*@Html.ValidationMessage("password")</span>
+    </div>
+
+    <!--Remember me(optional), some kind of cookie
+    <div class="form-group">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox"> Remember me
+            </label>
+        </div>
+    </div>-->
+    <div class="form-group">
+        <button type="submit" name="register" class="btn btn-primary" value="Register">Register</button>
+    </div>
+</form>
