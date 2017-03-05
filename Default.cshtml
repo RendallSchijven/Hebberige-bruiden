@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Xml.Linq
+@{
     //authentication ALWAYS FIRST
     if (!Security.IsAuthenticated())
     {
@@ -6,30 +7,19 @@
     }
 
     var wishlists = new List<Wishlist>();
-    //get all objects loaded, can be narrowed down with wishlists per user_id
+
+    //wishlists.Add(new Wishlist(1, "kekke lijst", "allemaal kekke items hier", save: true));
+    string user_link = Session["user_link"].ToString();
     var db = Database.Open("test");
-    var getQuery = "SELECT * FROM wishlists";
 
-    foreach (var row in db.Query(getQuery))
+    //just skip the insane query
+    string GetQuery = "SELECT * FROM wishlists WHERE wishlist_link IN" +
+                      "(SELECT wishlist_link FROM has WHERE user_link=@0)";
+
+    foreach (var row in db.Query(GetQuery, user_link))
     {
-        wishlists.Add(new Wishlist(row.user_id, row.name, row.description, row.public_link, row.wishlist_id));
+        wishlists.Add(new Wishlist(row.user_id, row.name, row.description, row.wishlist_link, row.wishlist_id));
     }
-
-
-
-    //example of creation of new wishlist(after database get otherwise redundant lists)
-    //wishlists.Add(new Wishlist(1,"kekelijst", "hier komt een beschrijving", "gibberish", save: true));
-
-    //Response.Write(Security.CreateAccount("kappa@kappa.nl", "keepo"));
-    //Response.Write(Security.Login("kappa@kappa.nl", "keepo"));
-    //Response.Write(Security.Login("kappa@.nl", "keepo"));
-    //Response.Write(Security.Login("kappa@kappa.nl", "kappa"));
-
-    //Response.Write(Session["user_id"]);
-    //Response.Write(Session["email"]);
-    //Response.Write(Session["public_link"]);
-
-    //Response.Write(Security.IsAuthenticated());
 
     Layout = "_Layout.cshtml";
 }

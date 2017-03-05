@@ -7,36 +7,6 @@
 
     var items = new List<Item>();
 
-    //Example add(after database get otherwise redundant lists)
-    
-    //items.Add(new Item(4,"bier","heel veel bier", buy_url: "www.kappa.nl", save: true));
-    if (Request.QueryString["wishlist_id"].IsEmpty() && Request.QueryString["item_id"].IsEmpty())
-    {
-        Response.Redirect("Default");
-    }
-    if (!Request.QueryString["wishlist_id"].IsEmpty())
-    {
-        int wishlist_id = Convert.ToInt32(Request.QueryString["wishlist_id"]);
-        //get all objects loaded, can be narrowed down with items per public_link, user_id
-        var db = Database.Open("test");
-        var getQuery = "SELECT * FROM items WHERE wishlist_id=@0";
-
-        foreach (var row in db.Query(getQuery, wishlist_id))
-        {
-            items.Add(new Item(row.wishlist_id, row.name, row.description, row.item_id, row.buy_url, row.visible, row.priority));
-        }
-    }
-    if (!Request.QueryString["item_id"].IsEmpty())
-    {
-        int item_id = Convert.ToInt32(Request.QueryString["item_id"]);
-        //get all objects loaded, can be narrowed down with items per user_id
-        var db = Database.Open("test");
-        var insertQuery = "";
-        //TODO: Finish making query
-
-
-    }
-
     Layout = "_Layout.cshtml";
 }
 

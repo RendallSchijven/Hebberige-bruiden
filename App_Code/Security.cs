@@ -28,14 +28,39 @@ public static class Security
         var db = Database.Open("test");
 
         //generate UNIQUE string
-        string publicLink = Guid.NewGuid().ToString();
+        string userLink = Guid.NewGuid().ToString();
 
         //test for existing email
         string GetQuery = "SELECT email FROM users WHERE email=@0";
         if (db.QuerySingle(GetQuery, email) != null) return "Email already set";
 
-        string InsertQuery = "INSERT INTO users (email, password, public_link) VALUES(@0, @1, @2); ";
-        db.Execute(InsertQuery, email, hashPass, publicLink);
+        string InsertQuery = "INSERT INTO users (email, password, user_link) VALUES(@0, @1, @2); ";
+        db.Execute(InsertQuery, email, hashPass, userLink);
+        Security.Login(email, password);
+        return "";
+    }
+
+    public static string CreateAccount(string email, string password, string referalLink)
+    {
+        string hashPass = HashPassword(password);
+        var db = Database.Open("test");
+
+        //generate UNIQUE string
+        string userLink = Guid.NewGuid().ToString();
+
+        //test for existing email
+        string GetQuery = "SELECT email FROM users WHERE email=@0";
+        if (db.QuerySingle(GetQuery, email) != null) return "Email already set";
+
+        string InsertQuery = "INSERT INTO users (email, password, user_link) VALUES(@0, @1, @2); ";
+        db.Execute(InsertQuery, email, hashPass, userLink);
+
+        GetQuery = "SELECT wishlist_link FROM has WHERE user_link=@0";
+        foreach (var row in db.Query(GetQuery, referalLink))
+        {
+            InsertQuery = "INSERT INTO has (user_link, wishlist_link) VALUES (@0, @1)";
+            db.Execute(InsertQuery, userLink, row.wishlist_link);
+        }
         Security.Login(email, password);
         return "";
     }
@@ -46,13 +71,13 @@ public static class Security
     public static string Login(string email, string password)
     {
         var db = Database.Open("test");
-        string GetQuery = "SELECT user_id, email, password, public_link FROM users WHERE email=@0";
+        string GetQuery = "SELECT user_id, email, password, user_link FROM users WHERE email=@0";
         var result = db.QuerySingle(GetQuery, email);
         if (result == null) return "No account associated with this email";
         if (!BCrypt.Net.BCrypt.Verify(password, result["password"])) return "Password is incorrect";
         HttpContext.Current.Session["user_id"] = result["user_id"];
         HttpContext.Current.Session["email"] = result["email"];
-        HttpContext.Current.Session["public_link"] = result["public_link"];
+        HttpContext.Current.Session["user_link"] = result["user_link"];
         HttpContext.Current.Response.Redirect("Default");
         return "";
     }
