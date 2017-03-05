@@ -6,29 +6,7 @@
     }
 
     var wishlists = new List<Wishlist>();
-    //get all objects loaded, can be narrowed down with wishlists per user_id
-    var db = Database.Open("test");
-    var getQuery = "SELECT * FROM wishlists";
-
-    foreach (var row in db.Query(getQuery))
-    {
-        wishlists.Add(new Wishlist(row.user_id, row.name, row.description, row.public_link, row.wishlist_id));
-    }
-
-    //example of creation of new wishlist(after database get otherwise redundant lists)
-    //wishlists.Add(new Wishlist(1,"kekelijst", "hier komt een beschrijving", "gibberish", save: true));
-
-    //Response.Write(Security.CreateAccount("kappa@kappa.nl", "keepo"));
-    //Response.Write(Security.Login("kappa@kappa.nl", "keepo"));
-    //Response.Write(Security.Login("kappa@.nl", "keepo"));
-    //Response.Write(Security.Login("kappa@kappa.nl", "kappa"));
-
-    //Response.Write(Session["user_id"]);
-    //Response.Write(Session["email"]);
-    //Response.Write(Session["public_link"]);
-
-    //Response.Write(Security.IsAuthenticated());
-
+    
     Layout = "_Layout.cshtml";
 }
 
