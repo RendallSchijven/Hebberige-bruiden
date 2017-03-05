@@ -4,11 +4,25 @@
         Response.Redirect("Default");
     }
 
-
-
     string error = "";
 
-    if (IsPost && !Request.Form["register"].IsEmpty())
+    if (IsPost && !Request.QueryString["user_link"].IsEmpty())
+    {
+        string user_link = Request.QueryString["user_link"];
+
+        //Validation
+        Validation.RequireField("email", "Email is required");
+        Validation.RequireField("password", "Password is required");
+        if (Validation.IsValid())
+        {
+            var email = Request.Form["email"];
+            var password = Request.Form["password"];
+
+            error = Security.CreateAccount(email, password, user_link);
+        }
+    }
+
+    if (IsPost && !Request.Form["register"].IsEmpty() && Request.QueryString["user_link"].IsEmpty())
     {
         //Validation
         Validation.RequireField("email", "Email is required");
