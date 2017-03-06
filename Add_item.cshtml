@@ -1,7 +1,8 @@
 ﻿@{
     Validation.RequireField("name", "Je moet een naam invoeren");
     
-
+    int user_id = Convert.ToInt32(Session["user_id"]);
+    int wishlist_id = Convert.ToInt32(Session["wishlist_id"]);
     string name = "";
     string description = "";
     string link = "";
@@ -11,11 +12,12 @@
         name = Request.Form["name"];
         description = Request.Form["description"];
         link = Request.Form["link"];
-        priority = Request.Form["priority"];
+        priority = Convert.ToInt32(Request.Form["priority"]);
 
         var db = Database.Open("test");
-        string insertWishlist = "INSERT INTO items (user_id, name, description) VALUES(@0, @1, @2)";
-        db.Execute(insertWishlist, user_id, name, description);
+        string selectItems = "SELECT * FROM items where wishlist_id = @1";
+        string insertItem = "INSERT INTO items (wishlist_id, user_id, name, description) VALUES(@0, @1, @2, @3)";
+        db.Execute(insertItem, user_id, name, description);
     }
 
     Layout = "_Layout.cshtml";
@@ -29,12 +31,15 @@
         <title></title>
     </head>
     <body>
+        @foreach (var item in db.Query(selectItems, wishlist_id)){
+            <p>@wishlist.name @wishlist.description @wishlist.wishlist_link</p>
+        }
         <form method="post">
-            <label for="name">Naam wenslijst</label>
+            <label for="name">Naam cadeau</label>
             <input type="text" id="name" name="name" placeholder="Naam wenslijst">
             <span style="color: red;">*@Html.ValidationMessage("name")</span>
 
-            <label for="description">Beschrijving wenslijst</label>
+            <label for="description">Beschrijving cadeau</label>
             <input type="text" id="description" name="description" placeholder="Beschrijving wenslijst">
 
             <label for="link">Link naar cadeau</label>

@@ -10,7 +10,6 @@
 
     var db = Database.Open("test");
     string selectWishlist = "SELECT * FROM wishlists where user_id = @0";
-    
 
     Layout = "_Layout.cshtml";
 }
@@ -34,5 +33,6 @@
 
 
 @foreach (var wishlist in db.Query(selectWishlist, user_id)){
-    <p>@wishlist.name @wishlist.description @wishlist.wishlist_link</p>
+    <p>@wishlist.name @wishlist.description @wishlist.wishlist_link
+    <a href="Add_item" class="btn btn-success" role="button">Items toevoegen</a></p>
 }
