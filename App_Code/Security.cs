@@ -27,40 +27,12 @@ public static class Security
         string hashPass = HashPassword(password);
         var db = Database.Open("test");
 
-        //generate UNIQUE string
-        string userLink = Guid.NewGuid().ToString();
-
         //test for existing email
         string GetQuery = "SELECT email FROM users WHERE email=@0";
         if (db.QuerySingle(GetQuery, email) != null) return "Email already set";
 
-        string InsertQuery = "INSERT INTO users (email, password, user_link) VALUES(@0, @1, @2); ";
-        db.Execute(InsertQuery, email, hashPass, userLink);
-        Security.Login(email, password);
-        return "";
-    }
-
-    public static string CreateAccount(string email, string password, string referalLink)
-    {
-        string hashPass = HashPassword(password);
-        var db = Database.Open("test");
-
-        //generate UNIQUE string
-        string userLink = Guid.NewGuid().ToString();
-
-        //test for existing email
-        string GetQuery = "SELECT email FROM users WHERE email=@0";
-        if (db.QuerySingle(GetQuery, email) != null) return "Email already set";
-
-        string InsertQuery = "INSERT INTO users (email, password, user_link) VALUES(@0, @1, @2); ";
-        db.Execute(InsertQuery, email, hashPass, userLink);
-
-        GetQuery = "SELECT wishlist_link FROM has WHERE user_link=@0";
-        foreach (var row in db.Query(GetQuery, referalLink))
-        {
-            InsertQuery = "INSERT INTO has (user_link, wishlist_link) VALUES (@0, @1)";
-            db.Execute(InsertQuery, userLink, row.wishlist_link);
-        }
+        string InsertQuery = "INSERT INTO users (email, password) VALUES(@0, @1); ";
+        db.Execute(InsertQuery, email, hashPass);
         Security.Login(email, password);
         return "";
     }
@@ -77,7 +49,6 @@ public static class Security
         if (!BCrypt.Net.BCrypt.Verify(password, result["password"])) return "Password is incorrect";
         HttpContext.Current.Session["user_id"] = result["user_id"];
         HttpContext.Current.Session["email"] = result["email"];
-        HttpContext.Current.Session["user_link"] = result["user_link"];
         HttpContext.Current.Response.Redirect("Default");
         return "";
     }
