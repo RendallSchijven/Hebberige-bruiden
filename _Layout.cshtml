@@ -27,42 +27,51 @@
 </head>
 
 <body>
-     <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                    <span class="glyphicon glyphicon-menu-hamburger"></span>
-                </button>
-                <a class="navbar-brand" href="Default">Home</a>
-            </div>
-            <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="active"><a href="#">Wenslijsten</a></li>
-                    <li><a href="#">Gereserveerde items</a></li>
-                    <li><a href="#">Account</a></li>
-                    <li><a href="Logout">Uitloggen</a></li>
-                </ul>
-            </div>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </button>
+            <a class="navbar-brand" href="Default">Home</a>
         </div>
-    </nav>
-
-    <!-- Page Content -->
-    <div>
-        @RenderBody()
-        <hr>
-        <!-- Footer -->
-        <footer>
-                <div class="container">
-                    <p>&copy; Svoin Moirk oin Roindoill</p>
-                </div>
-        </footer>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="active">
+                    <a href="#">Wenslijsten</a>
+                </li>
+                <li>
+                    <a href="#">Gereserveerde items</a>
+                </li>
+                <li>
+                    <a href="#">Account</a>
+                </li>
+                <li>
+                    <a href="Logout">Uitloggen</a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <!-- /.container -->
-    <!-- jQuery -->
-    <script src="js/jquery.js"></script>
+</nav>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+<!-- Page Content -->
+<!-- AFBLIJFEN -->
+<div class="container">
+    @RenderBody()
+    <hr>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; Svoin Moirk oin Roindoill</p>
+        </div>
+    </footer>
+</div>
+<!-- /.container -->
+<!-- jQuery -->
+<script src="js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="js/bootstrap.min.js"></script>
 
 </body>
 

@@ -5,8 +5,6 @@
         Response.Redirect("Login");
     }
 
-    var items = new List<Item>();
-
     Layout = "_Layout.cshtml";
 }
 
@@ -22,19 +20,16 @@
 <!-- /.row -->
 
 <!-- A for loop which displays each item in items -->
-@foreach (Item item in items)
-{
     <!-- Wishlist Row -->
     <div class="row">
 
         <div class="col-md-12 portfolio-item">
-            <a href="?item_id=@item.item_id">
+            <a href="?item_id=#">
                 <!-- Change size in url -->
                 <!-- <img class="img-responsive img-thumbnail center-block" src="http://placehold.it/750x200" alt="kappa"> -->
-                <h1>@item.name</h1>
-                <small>@item.description</small>
+                <h1></h1>
+                <small></small>
             </a>
         </div>
     </div>
     <!-- /.row -->
-}

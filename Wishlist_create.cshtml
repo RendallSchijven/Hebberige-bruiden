@@ -1,39 +1,30 @@
 ﻿@{
     Validation.RequireField("name", "Je moet een naam invoeren");
-    
-    int user_id = Convert.ToInt32(Session["user_id"]);
-    string name = "";
-    string description = "";
 
-    if(IsPost && Validation.IsValid()){
-        name = Request.Form["name"];
-        description = Request.Form["description"];
+    if (IsPost && Validation.IsValid())
+    {
+        int user_id = Convert.ToInt32(Session["user_id"]);
+        string name = Request.Form["name"];
+        string description = Request.Form["description"];
+        string wishlist_link = Security.UniqueID();
 
         var db = Database.Open("test");
-        string insertWishlist = "INSERT INTO wishlists (user_id, name, description) VALUES(@0, @1, @2)";
-        db.Execute(insertWishlist, user_id, name, description);
+        string insertWishlist = "INSERT INTO wishlists (user_id, name, description, wishlist_link) VALUES(@0, @1, @2, @3)";
+        db.Execute(insertWishlist, user_id, name, description, wishlist_link);
+        db.Close();
+        Response.Redirect("Default");
     }
 
     Layout = "_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<form method="post">
+    <label for="name">Naam wenslijst</label>
+    <input type="text" id="name" name="name" placeholder="Naam wenslijst">
+    <span style="color: red;">*@Html.ValidationMessage("name")</span>
 
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title></title>
-    </head>
-    <body>
-        <form method="post">
-            <label for="name">Naam wenslijst</label>
-            <input type="text" id="name" name="name" placeholder="Naam wenslijst">
-            <span style="color: red;">*@Html.ValidationMessage("name")</span>
+    <label for="description">Beschrijving wenslijst</label>
+    <input type="text" id="description" name="description" placeholder="Beschrijving wenslijst">
 
-            <label for="description">Beschrijving wenslijst</label>
-            <input type="text" id="description" name="description" placeholder="Beschrijving wenslijst">
-
-            <button type="submit" name="wishlist_create" class="btn btn-primary" value="wishlist_create">Wenslijst aanmaken</button>
-        </form>
-    </body>
-</html>
+    <button type="submit" name="wishlist_create" class="btn btn-primary" value="wishlist_create">Wenslijst aanmaken</button>
+</form>

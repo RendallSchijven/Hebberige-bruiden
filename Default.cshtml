@@ -1,5 +1,4 @@
-﻿@using System.Xml.Linq
-@{
+﻿@{
     //authentication ALWAYS FIRST
     if (!Security.IsAuthenticated())
     {
@@ -34,5 +33,5 @@
 
 @foreach (var wishlist in db.Query(selectWishlist, user_id)){
     <p>@wishlist.name @wishlist.description @wishlist.wishlist_link
-    <a href="Add_item" class="btn btn-success" role="button">Items toevoegen</a></p>
+    <a href="Add_item?wishlist_id=@wishlist.wishlist_id" class="btn btn-success" role="button">Items toevoegen</a></p>
 }

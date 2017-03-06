@@ -31,6 +31,7 @@ public static class Security
         string GetQuery = "SELECT email FROM users WHERE email=@0";
         if (db.QuerySingle(GetQuery, email) != null) return "Email already set";
 
+        //create user
         string InsertQuery = "INSERT INTO users (email, password) VALUES(@0, @1); ";
         db.Execute(InsertQuery, email, hashPass);
         Security.Login(email, password);
@@ -42,11 +43,20 @@ public static class Security
     /// </summary>
     public static string Login(string email, string password)
     {
+        //open database
         var db = Database.Open("test");
-        string GetQuery = "SELECT user_id, email, password, user_link FROM users WHERE email=@0";
+
+        //expect single result
+        string GetQuery = "SELECT user_id, email, password FROM users WHERE email=@0";
         var result = db.QuerySingle(GetQuery, email);
+
+        //check for existing email
         if (result == null) return "No account associated with this email";
+
+        //check for correct password
         if (!BCrypt.Net.BCrypt.Verify(password, result["password"])) return "Password is incorrect";
+
+        //Set sessions
         HttpContext.Current.Session["user_id"] = result["user_id"];
         HttpContext.Current.Session["email"] = result["email"];
         HttpContext.Current.Response.Redirect("Default");
@@ -79,5 +89,10 @@ public static class Security
     {
         if (HttpContext.Current.Session["user_id"] == null) return false;
         return true;
+    }
+
+    public static string UniqueID()
+    {
+        return Guid.NewGuid().ToString();
     }
 }
