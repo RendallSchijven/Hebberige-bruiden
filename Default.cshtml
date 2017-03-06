@@ -6,20 +6,11 @@
         Response.Redirect("Login");
     }
 
-    var wishlists = new List<Wishlist>();
+    int user_id = Convert.ToInt32(Session["user_id"]);
 
-    //wishlists.Add(new Wishlist(1, "kekke lijst", "allemaal kekke items hier", save: true));
-    string user_link = Session["user_link"].ToString();
     var db = Database.Open("test");
-
-    //just skip the insane query
-    string GetQuery = "SELECT * FROM wishlists WHERE wishlist_link IN" +
-                      "(SELECT wishlist_link FROM has WHERE user_link=@0)";
-
-    foreach (var row in db.Query(GetQuery, user_link))
-    {
-        wishlists.Add(new Wishlist(row.user_id, row.name, row.description, row.wishlist_link, row.wishlist_id));
-    }
+    string selectWishlist = "SELECT * FROM wishlists where user_id = @0";
+    
 
     Layout = "_Layout.cshtml";
 }
@@ -40,19 +31,8 @@
 <a href="Wishlist_create" class="btn btn-success" role="button">Wenslijst maken</a>
 <a href="Wishlist_edit" class="btn btn-success" role="button">Wenslijst aanpassen</a>
 
-<!-- A for loop which displays each wishlist in wishlists -->
-@foreach (Wishlist wishlist in wishlists)
-{
-    <!-- Wishlist Row -->
-    <div class="row">
-        <div class="col-md-12 portfolio-item">
-            <a href="Item?wishlist_id=@wishlist.wishlist_id">
-                <!-- Change size in url -->
-                <!-- <img class="img-responsive img-thumbnail center-block" src="http://placehold.it/750x200" alt="kappa"> -->
-                    <h1>@wishlist.name</h1>
-                    <small>@wishlist.description</small>
-            </a>
-        </div>
-    </div>
-    <!-- /.row -->
+
+
+@foreach (var wishlist in db.Query(selectWishlist, user_id)){
+    <p>@wishlist.name @wishlist.description @wishlist.wishlist_link</p>
 }
