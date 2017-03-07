@@ -10,8 +10,7 @@
 
     var db = Database.Open("test");
 
-    string selectItems = "SELECT * FROM items where wishlist_id = @0 AND visible=1";
-    string wishlist_id = Request.QueryString["wishlist_id"];
+    int wishlist_id = Convert.ToInt32(Request.QueryString["wishlist_id"]);
 
     Validation.RequireField("name", "Je moet een naam invoeren");
 
@@ -24,6 +23,9 @@
 
         string insertItem = "INSERT INTO items (wishlist_id, name, description, buy_url, priority) VALUES(@0, @1, @2, @3, @4)";
         db.Execute(insertItem, wishlist_id, name, description, link, priority);
+
+        //string Redirect = "Wishlist_view?wishlist_id={0}", wishlist_id;
+        Response.Redirect("Default");
     }
 
     Layout = "_Layout.cshtml";
@@ -33,8 +35,7 @@
 <div class="row">
     <div class="col-lg-12">
         <h1 class="page-header">
-            Items
-            <small>wishlist</small>
+            Cadeaus toevoegen
         </h1>
     </div>
 </div>

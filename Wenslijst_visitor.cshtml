@@ -1,0 +1,56 @@
+﻿@{
+    //authentication ALWAYS FIRST
+    if (!Security.IsAuthenticated())
+    {
+        Response.Redirect("Login");
+    }
+
+    var db = Database.Open("test");
+
+    if(Request.QueryString["uniek"].IsEmpty()){
+        Response.Redirect("Default");
+    }
+
+    string wenslijst_link = Request.QueryString["uniek"].ToString();
+    string selectWenslijst = "SELECT * FROM items where visible = 1 AND wishlist_id IN (SELECT wishlist_id FROM wishlists WHERE wishlist_link = @0)";
+
+    if (db.QuerySingle(selectWenslijst, wenslijst_link) == null){
+        Response.Redirect("Default");   
+    }
+
+    if (!Request.Form["claim_item"].IsEmpty())
+    {
+        string item_id = Request.Form["claim_item"];
+        string updateQuery = "UPDATE items SET user_id_claim=@0, visible=0 WHERE item_id=@1";
+        db.Execute(updateQuery, Session["user_id"], item_id);
+    }
+    Layout = "_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">
+            Wenslijst
+        </h1>
+    </div>
+</div>
+
+<!-- A for loop which displays each item in items -->
+    <!-- Wishlist Row -->
+    <div class="row">
+        <div class="col-md-12 portfolio-item">
+            @foreach (var item in db.Query(selectWenslijst, wenslijst_link)){
+            string priority = "";
+            int prio = Convert.ToInt32(item.priority);
+            switch(prio){
+                case 1: priority = "Hoog";
+                break;
+                case 2: priority = "Middel";
+                break;
+                case 3: priority = "Laag";
+                break;
+            }
+            @item.name @item.description @item.buy_url @priority <form method="post"><button type="submit" name="claim_item" class="btn btn-primary" value="@item.item_id">Cadeau reserveren</button></form>}
+        </div>
+    </div>
+    <!-- /.row -->
