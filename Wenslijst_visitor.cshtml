@@ -14,14 +14,14 @@
     string wenslijst_link = Request.QueryString["uniek"].ToString();
     string name = "";
     string desc = "";
-    //int wishlist_id = 0;
-    string selectWenslijst = "SELECT * FROM items where visible = 1 AND wishlist_id IN (SELECT wishlist_id FROM wishlists WHERE wishlist_link = @0)";
-    //string getId = "SELECT wishlist_id FROM wishlists WHERE wishlist_link = @0";
-    //wishlist_id = db.QuerySingle(getId, wenslijst_link)["wishlist_id"];
-    //string description = "SELECT description FROM wishlists WHERE wishlist_id = @0";
-    //desc = db.QuerySingle(description, wishlist_id)["description"];
-    //string naam = "SELECT name FROM wishlists WHERE wishlist_id = @0";
-    //name = db.QuerySingle(naam, wishlist_id)["name"];
+    int wishlist_id = 0;
+    string selectWenslijst = "SELECT * FROM items where visible = 1 AND wishlist_id IN (SELECT wishlist_id FROM wishlists WHERE wishlist_link = @0) ORDER BY priority ASC";
+    string getId = "SELECT wishlist_id FROM wishlists WHERE wishlist_link = @0";
+    wishlist_id = db.QuerySingle(getId, wenslijst_link)["wishlist_id"];
+    string description = "SELECT description FROM wishlists WHERE wishlist_id = @0";
+    desc = db.QuerySingle(description, wishlist_id)["description"];
+    string naam = "SELECT name FROM wishlists WHERE wishlist_id = @0";
+    name = db.QuerySingle(naam, wishlist_id)["name"];
 
     if (db.QuerySingle(selectWenslijst, wenslijst_link) == null){
         Response.Redirect("Default");   
@@ -42,30 +42,54 @@
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">
-
+            @name
         </h1>
         <h3>Beschrijving</h3>
-        <p></p>
+        <p>@desc</p>
     </div>
 </div>
 <!-- /.row -->
+
+<form method="post" id="Claim"></form>
 
 <!-- A for loop which displays each item in items -->
     <!-- Wishlist Row -->
     <div class="row">
         <div class="col-md-12 portfolio-item">
-            @foreach (var item in db.Query(selectWenslijst, wenslijst_link)){
-            string priority = "";
-            int prio = Convert.ToInt32(item.priority);
-            switch(prio){
-                case 1: priority = "Hoog";
-                break;
-                case 2: priority = "Middel";
-                break;
-                case 3: priority = "Laag";
-                break;
-            }
-            @item.name @item.description @item.buy_url @priority <form method="post"><button type="submit" name="claim_item" class="btn btn-primary" value="@item.item_id">Cadeau reserveren</button></form>}
+            <h3 class="page-header">Cadeaus`s</h3>
+            <div class="table-responsive">
+                <table class="table-bordered">
+                    <tr>
+                        <th>Naam</th>
+                        <th>Beschrijving</th>
+                        <th>Linkje</th>
+                        <th>Prioriteit</th>
+                        <th></th>
+                    </tr>
+                    @foreach (var item in db.Query(selectWenslijst, wenslijst_link)){
+                        string priority = "";
+                        int prio = Convert.ToInt32(item.priority);
+                        int claim = Convert.ToInt32(item.visible);
+                        switch(prio){
+                            case 1: priority = "Hoog";
+                            break;
+                            case 2: priority = "Middel";
+                            break;
+                            case 3: priority = "Laag";
+                            break;
+                        }
+                        <tr>
+                            <td>@item.name</td> 
+                            <td>@item.description</td> 
+                            <td>@item.buy_url</td>
+                            <td>@priority</td>
+                            <td><button type="submit" name="claim_item" class="btn btn-primary" value="@item.item_id" form="Claim">Reserveren</button></td>
+                        </tr>
+                    }
+                </table>
+                <a href="Default" class="btn btn-success" role="button">Terug</a>
+            </div>
         </div>
     </div>
+
     <!-- /.row -->

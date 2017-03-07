@@ -16,7 +16,7 @@
         wishlist_id = Convert.ToInt32(Request.QueryString["wishlist_id"]);
         string getcode = "SELECT wishlist_link FROM wishlists WHERE wishlist_id = @0";
         result = db.QuerySingle(getcode, wishlist_id)["wishlist_link"];
-        selectItems = "SELECT * FROM items WHERE wishlist_id = @0"; 
+        selectItems = "SELECT * FROM items WHERE wishlist_id = @0 ORDER BY priority ASC"; 
         string description = "SELECT description FROM wishlists WHERE wishlist_id = @0";
         desc = db.QuerySingle(description, wishlist_id)["description"];
         string naam = "SELECT name FROM wishlists WHERE wishlist_id = @0";
@@ -57,37 +57,64 @@
 </div>
 <!-- /.row -->
 
+<form method="post" id="Item_delete"></form>
+<form method="post" id="Wishlist_delete"></form>
+<form method="post" id="Item_edit"></form>
+
 <!-- A for loop which displays each item in items -->
     <!-- Wishlist Row -->
     <div class="row">
         <div class="col-md-12 portfolio-item">
-            <h3 class="page-header">Cadeautjes</h3>
-            @foreach (var item in db.Query(selectItems, wishlist_id)){
-            string priority = "";
-            string claimed = "";
-            int prio = Convert.ToInt32(item.priority);
-            int claim = Convert.ToInt32(item.visible);
-            switch(claim){
-                case 0: claimed = "Gereserveerd";
-                break;
-                case 1: claimed = "Niet gereserveerd";
-                break;
-            }
-            switch(prio){
-                case 1: priority = "Hoog";
-                break;
-                case 2: priority = "Middel";
-                break;
-                case 3: priority = "Laag";
-                break;
-            }
-            <p>@item.name @item.description @item.buy_url @priority @claimed</p>
-            <form method="post"><button type="submit" name="delete_item" class="btn btn-primary" value="@item.item_id">Cadeau verwijderen</button></form>}
+            <h3 class="page-header">Cadeaus`s</h3>
+            <div class="table-responsive">
+                <table class="table-bordered">
+                    <tr>
+                        <th>Naam</th>
+                        <th>Beschrijving</th>
+                        <th>Linkje</th>
+                        <th>Prioriteit</th>
+                        <th>Status</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    @foreach (var item in db.Query(selectItems, wishlist_id)){
+                        string priority = "";
+                        string claimed = "";
+                        int prio = Convert.ToInt32(item.priority);
+                        int claim = Convert.ToInt32(item.visible);
+                        switch(claim){
+                            case 0: claimed = "Gereserveerd";
+                            break;
+                            case 1: claimed = "Niet gereserveerd";
+                            break;
+                        }
+                        switch(prio){
+                            case 1: priority = "Hoog";
+                            break;
+                            case 2: priority = "Middel";
+                            break;
+                            case 3: priority = "Laag";
+                            break;
+                        }
+                        <tr>
+                            <td>@item.name</td> 
+                            <td>@item.description</td> 
+                            <td>@item.buy_url</td>
+                            <td>@priority</td>
+                            <td>@claimed</td>
+                            <td><a href="Edit_item?item_id=@item.item_id" class="btn btn-success" role="button">Bewerken</a></td>
+                            <td><button type="submit" name="delete_item" class="btn btn-danger" value="@item.item_id" form="Item_delete">Verwijderen</button></td>
+                        </tr>
+                    }
+                </table>
+            </div>
 
-            <p></p><a href="Add_item?wishlist_id=@wishlist_id" class="btn btn-primary" role="button">Cadeau toevoegen</a>
-            <a href="Wishlist_edit" class="btn btn-primary" role="button">Wenslijst aanpassen</a></p>
-
-            <form method="post"><button type="submit" name="delete_wishlist" class="btn btn-primary" value="@wishlist_id">Wenslijst verwijderen</button></form>
+            <p>
+                <a href="Add_item?wishlist_id=@wishlist_id" class="btn btn-success" role="button">Cadeau toevoegen</a>
+                <a href="Wishlist_edit" class="btn btn-primary" role="button">Wenslijst aanpassen</a>
+                <button type="submit" name="delete_wishlist" class="btn btn-danger" value="@wishlist_id" form="Wishlist_delete">Wenslijst verwijderen</button>
+            </p>
+             <a href="Default" class="btn btn-success" role="button">Terug</a>
         </div>
     </div>
     <!-- /.row -->

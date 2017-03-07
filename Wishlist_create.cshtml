@@ -1,4 +1,9 @@
 ﻿@{
+    if (!Security.IsAuthenticated())
+    {
+        Response.Redirect("Login");
+    }
+
     Validation.RequireField("name", "Je moet een naam invoeren");
 
     if (IsPost && Validation.IsValid())
@@ -18,13 +23,25 @@
     Layout = "_Layout.cshtml";
 }
 
-<form method="post">
-    <label for="name">Naam wenslijst</label>
-    <input type="text" id="name" name="name" placeholder="Naam wenslijst">
-    <span style="color: red;">*@Html.ValidationMessage("name")</span>
+<div class="row">
+    <div class="col-md-12 portfolio-item">
+        <form class="form-horizontal" method="post">
+            
+            <div class="form-group">
+                <label for="name">Naam wenslijst</label>
+                <input class="form-control" type="text" id="name" name="name" placeholder="Naam wenslijst">
+                <span style="color: red;">*@Html.ValidationMessage("name")</span>
+            </div>
 
-    <label for="description">Beschrijving wenslijst</label>
-    <input type="text" id="description" name="description" placeholder="Beschrijving wenslijst">
+            <div class="form-group">
+                <label for="description">Beschrijving wenslijst</label>
+                <input class ="form-control" type="text" id="description" name="description" placeholder="Beschrijving wenslijst">
+            </div>
 
-    <button type="submit" name="wishlist_create" class="btn btn-primary" value="wishlist_create">Wenslijst aanmaken</button>
-</form>
+            <div class="form-group">
+                <button type="submit" name="wishlist_create" class="btn btn-primary" value="wishlist_create">Wenslijst aanmaken</button>
+            </div>
+        </form>
+    </div>
+</div>
+<a href="Default" class="btn btn-success" role="button">Terug</a>

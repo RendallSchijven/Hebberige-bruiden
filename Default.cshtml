@@ -38,7 +38,7 @@
         </h1>
     </div>
     <div class="col-lg-6">
-        <h1 class="page-header">Gereserveerde items</h1>
+        <h1 class="page-header">Gereserveerde cadeaus</h1>
     </div>
 </div>
 <!-- /.row -->
@@ -46,25 +46,42 @@
 <!-- Page Heading -->
 <div class="row">
     <div class="col-lg-6">
-        <table>
-            <tr>
-                <th>Naam</th>
-                <th></th>
-            </tr>
-            @foreach (var wishlist in db.Query(selectWishlist, user_id)){
-            <tr>
-                <td>@wishlist.name</td> 
-                <td><a href="Wishlist_view?wishlist_id=@wishlist.wishlist_id" class="btn btn-link" role="button">Openen</a></td>
-            </tr>
-            }
-        </table>
+        <div class="table-responsive">
+            <table class="table-bordered">
+                <tr>
+                    <th>Naam</th>
+                    <th></th>
+                </tr>
+                @foreach (var wishlist in db.Query(selectWishlist, user_id)){
+                <tr>
+                    <td>@wishlist.name</td> 
+                    <td><a href="Wishlist_view?wishlist_id=@wishlist.wishlist_id" class="btn btn-link" role="button">Openen</a></td>
+                </tr>
+                }
+            </table>
+        </div>
     </div>
 
+    <form method="post" id="Cancel_form"></form>
+
     <div class="col-lg-6">
-        @foreach (var item in db.Query(selectClaims, user_id)){
-            <p>@item.name @item.description @item.buy_url</p>
-            <form method="post"><button type="submit" name="cancel_claim" class="btn btn-primary" value="@item.item_id">Annuleren</button></form>
-        }
+        <div class="table-responsive">
+            <table class="table-bordered">
+                <tr>
+                    <th>Naam</th>
+                    <th>Beschrijving</th>
+                    <th>Linkje</th>
+                </tr>
+                @foreach (var item in db.Query(selectClaims, user_id)){
+                <tr>
+                    <td>@item.name</td> 
+                    <td>@item.description</td> 
+                    <td>@item.buy_url</td>
+                    <td><button type="submit" name="cancel_claim" class="btn btn-primary" form="Cancel_form" value="@item.item_id">Annuleren</button></td>
+                </tr>
+                }
+            </table>
+        </div>
     </div>
 </div>
 <!-- /.row -->
