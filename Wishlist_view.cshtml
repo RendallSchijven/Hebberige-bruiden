@@ -9,14 +9,38 @@
     string selectItems = "";
     int wishlist_id = 0;
     string result = "";
+    string desc= "";
+    string name= "";
 
     if(!Request.QueryString["wishlist_id"].IsEmpty()){
         wishlist_id = Convert.ToInt32(Request.QueryString["wishlist_id"]);
         string getcode = "SELECT wishlist_link FROM wishlists WHERE wishlist_id = @0";
         result = db.QuerySingle(getcode, wishlist_id)["wishlist_link"];
-        selectItems = "SELECT * FROM items where wishlist_id = @0";  
+        selectItems = "SELECT * FROM items WHERE wishlist_id = @0"; 
+        string description = "SELECT description FROM wishlists WHERE wishlist_id = @0";
+        desc = db.QuerySingle(description, wishlist_id)["description"];
+        string naam = "SELECT name FROM wishlists WHERE wishlist_id = @0";
+        name = db.QuerySingle(naam, wishlist_id)["name"];
     }
 
+    if (!Request.Form["delete_item"].IsEmpty())
+    {
+        string item_id = Request.Form["delete_item"];
+        string deleteItems = "DELETE FROM items WHERE item_id=@0";
+        db.Execute(deleteItems, item_id);
+    }
+
+    if (!Request.Form["delete_wishlist"].IsEmpty())
+    {
+        string delete_wishlist = Request.Form["delete_wishlist"];
+        string deleteItems = "DELETE FROM items WHERE wishlist_id=@0";
+        string deleteWishlist = "DELETE FROM wishlists WHERE wishlist_id=@0";
+        db.Execute(deleteItems, delete_wishlist);
+        db.Execute(deleteWishlist, delete_wishlist);
+        Response.Redirect("Default");
+    }
+
+    Page.title = "Wenslijst";
     Layout = "_Layout.cshtml";
 }
 
@@ -24,9 +48,11 @@
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">
-            Wenslijst
-            <small>Unieke code: <input value=@result readonly size="37"></small>
+            @name
+            <small>Unieke code: <input value=@result readonly size="40"></small>
         </h1>
+        <h3>Beschrijving</h3>
+        <p>@desc</p>
     </div>
 </div>
 <!-- /.row -->
@@ -35,9 +61,18 @@
     <!-- Wishlist Row -->
     <div class="row">
         <div class="col-md-12 portfolio-item">
+            <h3 class="page-header">Cadeautjes</h3>
             @foreach (var item in db.Query(selectItems, wishlist_id)){
             string priority = "";
+            string claimed = "";
             int prio = Convert.ToInt32(item.priority);
+            int claim = Convert.ToInt32(item.visible);
+            switch(claim){
+                case 0: claimed = "Gereserveerd";
+                break;
+                case 1: claimed = "Niet gereserveerd";
+                break;
+            }
             switch(prio){
                 case 1: priority = "Hoog";
                 break;
@@ -46,8 +81,13 @@
                 case 3: priority = "Laag";
                 break;
             }
-            <p>@item.name @item.description @item.buy_url @priority</p>}
-            <a href="Add_item?wishlist_id=@wishlist_id" class="btn btn-success" role="button">Cadeau toevoegen</a>
+            <p>@item.name @item.description @item.buy_url @priority @claimed</p>
+            <form method="post"><button type="submit" name="delete_item" class="btn btn-primary" value="@item.item_id">Cadeau verwijderen</button></form>}
+
+            <p></p><a href="Add_item?wishlist_id=@wishlist_id" class="btn btn-primary" role="button">Cadeau toevoegen</a>
+            <a href="Wishlist_edit" class="btn btn-primary" role="button">Wenslijst aanpassen</a></p>
+
+            <form method="post"><button type="submit" name="delete_wishlist" class="btn btn-primary" value="@wishlist_id">Wenslijst verwijderen</button></form>
         </div>
     </div>
     <!-- /.row -->
