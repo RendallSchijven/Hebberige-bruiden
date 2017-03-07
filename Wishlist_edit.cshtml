@@ -1,15 +1,9 @@
 ﻿@{
+    if (!Security.IsAuthenticated())
+    {
+        Response.Redirect("Login");
+    }
+
+    Page.title = "Wenslijst aanpassen";
     Layout = "_Layout.cshtml";
 }
-
-<!DOCTYPE html>
-
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title></title>
-    </head>
-    <body>
-        
-    </body>
-</html>
