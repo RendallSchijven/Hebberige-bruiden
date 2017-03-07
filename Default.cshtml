@@ -5,15 +5,35 @@
         Response.Redirect("Login");
     }
 
+    Validation.RequireField("uniek", "Je moet een code invoeren");
+
     int user_id = Convert.ToInt32(Session["user_id"]);
 
     var db = Database.Open("test");
     string selectWishlist = "SELECT * FROM wishlists where user_id = @0";
+    string selectClaims = "SELECT * FROM items where user_id_claim = @0";
+
+     if (!Request.Form["cancel_claim"].IsEmpty())
+    {
+        string item_id = Request.Form["cancel_claim"];
+        string updateQuery = "UPDATE items SET user_id_claim=null, visible=1 WHERE item_id=@0";
+        db.Execute(updateQuery, item_id);
+    }
 
     Layout = "_Layout.cshtml";
 }
 
 <!-- Page Heading -->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Voer hier de unieke link in</h1>
+        <form method="get" action="Wenslijst_visitor">
+            <input class="form-control" type="text" id="uniek" name="uniek" placeholder="Unieke code">
+            <span style="color: red;">*@Html.ValidationMessage("uniek")</span>
+            <button type="submit" name="uniek_input" class="btn btn-primary" value="uniek_input">Verstuur</button>
+        </form>
+    </div>
+</div>
 <div class="row">
     <div class="col-lg-6">
         <h1 class="page-header">
@@ -26,12 +46,21 @@
 </div>
 <!-- /.row -->
 
+<!-- Page Heading -->
+<div class="row">
+    <div class="col-lg-6">
+        @foreach (var wishlist in db.Query(selectWishlist, user_id)){
+        <p>@wishlist.name <a href="Wishlist_view?wishlist_id=@wishlist.wishlist_id" class="btn btn-success" role="button">Wenslijst openen</a> <a href="Wishlist_edit" class="btn btn-success" role="button">Wenslijst aanpassen</a></p>
+        }
+    </div>
+    <div class="col-lg-6">
+        @foreach (var item in db.Query(selectClaims, user_id)){
+            <p>@item.name @item.description @item.buy_url</p>
+            <form method="post"><button type="submit" name="cancel_claim" class="btn btn-primary" value="@item.item_id">Annuleren</button></form>
+        }
+    </div>
+</div>
+<!-- /.row -->
+
+
 <a href="Wishlist_create" class="btn btn-success" role="button">Wenslijst maken</a>
-<a href="Wishlist_edit" class="btn btn-success" role="button">Wenslijst aanpassen</a>
-
-
-
-@foreach (var wishlist in db.Query(selectWishlist, user_id)){
-    <p>@wishlist.name @wishlist.description @wishlist.wishlist_link
-    <a href="Add_item?wishlist_id=@wishlist.wishlist_id" class="btn btn-success" role="button">Items toevoegen</a></p>
-}

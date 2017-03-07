@@ -1,0 +1,53 @@
+﻿@{
+    //authentication ALWAYS FIRST
+    if (!Security.IsAuthenticated())
+    {
+        Response.Redirect("Login");
+    }
+
+    var db = Database.Open("test");
+    string selectItems = "";
+    int wishlist_id = 0;
+    string result = "";
+
+    if(!Request.QueryString["wishlist_id"].IsEmpty()){
+        wishlist_id = Convert.ToInt32(Request.QueryString["wishlist_id"]);
+        string getcode = "SELECT wishlist_link FROM wishlists WHERE wishlist_id = @0";
+        result = db.QuerySingle(getcode, wishlist_id)["wishlist_link"];
+        selectItems = "SELECT * FROM items where wishlist_id = @0";  
+    }
+
+    Layout = "_Layout.cshtml";
+}
+
+<!-- Page Heading -->
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">
+            Wenslijst
+            <small>Unieke code: <input value=@result readonly size="37"></small>
+        </h1>
+    </div>
+</div>
+<!-- /.row -->
+
+<!-- A for loop which displays each item in items -->
+    <!-- Wishlist Row -->
+    <div class="row">
+        <div class="col-md-12 portfolio-item">
+            @foreach (var item in db.Query(selectItems, wishlist_id)){
+            string priority = "";
+            int prio = Convert.ToInt32(item.priority);
+            switch(prio){
+                case 1: priority = "Hoog";
+                break;
+                case 2: priority = "Middel";
+                break;
+                case 3: priority = "Laag";
+                break;
+            }
+            <p>@item.name @item.description @item.buy_url @priority</p>}
+            <a href="Add_item?wishlist_id=@wishlist_id" class="btn btn-success" role="button">Cadeau toevoegen</a>
+        </div>
+    </div>
+    <!-- /.row -->
