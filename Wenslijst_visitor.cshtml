@@ -67,6 +67,7 @@
                         <th></th>
                     </tr>
                     @foreach (var item in db.Query(selectWenslijst, wenslijst_link)){
+                        string link = Convert.ToString(item.buy_url);
                         string priority = "";
                         int prio = Convert.ToInt32(item.priority);
                         int claim = Convert.ToInt32(item.visible);
@@ -81,7 +82,7 @@
                         <tr>
                             <td>@item.name</td> 
                             <td>@item.description</td> 
-                            @if (!item.buy_url == "")
+                            @if (!link.IsEmpty())
                             {
                                 <td><a href="@item.buy_url" target="_blank">Koop</a></td>
                             }

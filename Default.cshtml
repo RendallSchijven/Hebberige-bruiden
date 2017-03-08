@@ -75,10 +75,11 @@
                     <th>Linkje</th>
                 </tr>
                 @foreach (var item in db.Query(selectClaims, user_id)){
+                    string link = Convert.ToString(item.buy_url);
                 <tr>
                     <td>@item.name</td> 
                     <td>@item.description</td>
-                    @if(!item.buy_url == "") {
+                    @if(!link.IsEmpty()) {
                         <td><a href="@item.buy_url" target="_blank">Koop</a></td>
                     }
                     else {
