@@ -55,7 +55,7 @@
                 @foreach (var wishlist in db.Query(selectWishlist, user_id)){
                 <tr>
                     <td>@wishlist.name</td> 
-                    <td><a href="Wishlist_view?wishlist_id=@wishlist.wishlist_id" class="btn btn-link" role="button">Openen</a></td>
+                    <td><a href="Wishlist_view?wishlist_id=@wishlist.wishlist_id" class="btn btn-primary" role="button">Openen</a></td>
                 </tr>
                 }
             </table>
