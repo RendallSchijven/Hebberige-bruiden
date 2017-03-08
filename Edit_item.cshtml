@@ -37,11 +37,12 @@
         string description_edit = Request.Form["description"];
         string link_edit = Request.Form["link"];
         int priority_edit = Convert.ToInt32(Request.Form["priority"]);
+        item_id = Convert.ToInt32(Request.Form["item_id"]);
         string editItem = "UPDATE items SET name=@0, description=@1, buy_url=@2, priority=@3 WHERE item_id = @4";
         db.Execute(editItem, name_edit, description_edit, link_edit, priority_edit, item_id);
 
         //string Redirect = "Wishlist_view?wishlist_id={0}", wishlist_id;
-        Response.Redirect("Default");
+        //Response.Redirect("Default");
     }
 
     Page.title = "Cadeau aanpassen";
@@ -88,6 +89,7 @@
             </div>
 
             <div class="form-group">
+                <input type="hidden" name="item_id" value="@item_id">
                 <button type="submit" name="Edit_item" class="btn btn-primary" value="Edit_item">Cadeau aanpassen</button>
             </div>
         </form>
