@@ -17,6 +17,8 @@
         string delete_claim = "UPDATE items SET user_id_claim=null, visible=1 WHERE item_id=@0";
         db.Execute(delete_claim, item_id);
     }
+
+    Page.title = "Huwelijks wenslijsten";
     Layout = "_Layout.cshtml";
 }
 
