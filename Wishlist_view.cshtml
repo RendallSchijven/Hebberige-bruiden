@@ -99,7 +99,14 @@
                         <tr>
                             <td>@item.name</td> 
                             <td>@item.description</td> 
-                            <td><a href="@item.buy_url" target="_blank">Koop</a></td>
+                            @if (!item.buy_url == "")
+                            {
+                                <td><a href="@item.buy_url" target="_blank">Koop</a></td>
+                            }
+                            else
+                            {
+                                <td>Geen Link</td>
+                            }
                             <td>@priority</td>
                             <td>@claimed</td>
                             <td><a href="Edit_item?item_id=@item.item_id" class="btn btn-success" role="button">Bewerken</a></td>

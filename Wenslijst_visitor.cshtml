@@ -81,7 +81,14 @@
                         <tr>
                             <td>@item.name</td> 
                             <td>@item.description</td> 
-                            <td><a href="@item.buy_url" target="_blank">Koop</a></td>
+                            @if (!item.buy_url == "")
+                            {
+                                <td><a href="@item.buy_url" target="_blank">Koop</a></td>
+                            }
+                            else
+                            {
+                                <td>Geen Link</td>
+                            }
                             <td>@priority</td>
                             <td><button type="submit" name="claim_item" class="btn btn-primary" value="@item.item_id" form="Claim">Reserveren</button></td>
                         </tr>
