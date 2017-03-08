@@ -34,7 +34,7 @@
         string name_edit = Request.Form["name"];
         string description_edit = Request.Form["description"];
         wishlist_id = Convert.ToInt32(Request.Form["wishlist_id"]);
-        string editItem = "UPDATE items SET name=@0, description=@1 WHERE wishlist_id = @2";
+        string editItem = "UPDATE wishlists SET name=@0, description=@1 WHERE wishlist_id = @2";
         db.Execute(editItem, name_edit, description_edit, wishlist_id);
 
         //string Redirect = "Wishlist_view?wishlist_id={0}", wishlist_id;
