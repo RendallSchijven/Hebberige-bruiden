@@ -4,6 +4,66 @@
         Response.Redirect("Login");
     }
 
+    var db = Database.Open("test");
+    int wishlist_id = 0;
+    string name = "";
+    string description = "";
+    
+    if(!IsPost){
+        if(!Request.QueryString["wishlist_id"].IsEmpty()) {
+            wishlist_id = Convert.ToInt32(Request.QueryString["wishlist_id"]);
+            var getWishlist = "SELECT * FROM wishlists WHERE wishlist_id = @0";
+            var row = db.QuerySingle(getWishlist, wishlist_id);
+            if(row != null) {
+                name = row.name;
+                description = row.description;
+            }
+            else {
+                Validation.AddFormError("Er is geen wenslijst met dat id");
+            }
+        }
+        else{
+            Validation.AddFormError("Er is geen wenslijst geselecteerd");
+        }
+    }
+
+    Validation.RequireField("name", "Je moet een naam invoeren");
+
+    if (IsPost && Validation.IsValid())
+    {
+        string name_edit = Request.Form["name"];
+        string description_edit = Request.Form["description"];
+        wishlist_id = Convert.ToInt32(Request.Form["wishlist_id"]);
+        string editItem = "UPDATE items SET name=@0, description=@1 WHERE wishlist_id = @2";
+        db.Execute(editItem, name_edit, description_edit, wishlist_id);
+
+        //string Redirect = "Wishlist_view?wishlist_id={0}", wishlist_id;
+        Response.Redirect("Default");
+    }
+
     Page.title = "Wenslijst aanpassen";
     Layout = "_Layout.cshtml";
 }
+
+<div class="row">
+    <div class="col-md-12 portfolio-item">
+        <form class="form-horizontal" method="post">
+            
+            <div class="form-group">
+                <label for="name">Naam wenslijst</label>
+                <input class="form-control" type="text" id="name" name="name" placeholder="Naam wenslijst" value="@name">
+                <span style="color: red;">*@Html.ValidationMessage("name")</span>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Beschrijving wenslijst</label>
+                <input class ="form-control" type="text" id="description" name="description" placeholder="Beschrijving wenslijst" value="@description">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" name="wishlist_edit" class="btn btn-primary" value="wishlist_edit">Bevestigen</button>
+            </div>
+        </form>
+    </div>
+</div>
+<a href="Default" class="btn btn-success" role="button">Terug</a>
